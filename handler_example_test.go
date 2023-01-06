@@ -16,26 +16,26 @@ package connect_test
 
 import (
 	"context"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 // ExamplePingServer implements some trivial business logic. The Protobuf
 // definition for this API is in proto/connect/ping/v1/ping.proto.
 type ExamplePingServer struct {
-	pingv1connect.UnimplementedPingServiceHandler
+	pingv1connect_test.UnimplementedPingServiceHandler
 }
 
 // Ping implements pingv1connect.PingServiceHandler.
 func (*ExamplePingServer) Ping(
 	_ context.Context,
-	request *connect.Request[pingv1.PingRequest],
-) (*connect.Response[pingv1.PingResponse], error) {
+	request *connect.Request[pingv1_test.PingRequest],
+) (*connect.Response[pingv1_test.PingResponse], error) {
 	return connect.NewResponse(
-		&pingv1.PingResponse{
+		&pingv1_test.PingResponse{
 			Number: request.Msg.Number,
 			Text:   request.Msg.Text,
 		},
@@ -49,7 +49,7 @@ func Example_handler() {
 	// the Connect, gRPC, and gRPC-Web protocols.
 	mux := http.NewServeMux()
 	mux.Handle(
-		pingv1connect.NewPingServiceHandler(
+		pingv1connect_test.NewPingServiceHandler(
 			&ExamplePingServer{}, // our business logic
 		),
 	)

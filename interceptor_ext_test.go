@@ -16,14 +16,14 @@ package connect_test
 
 import (
 	"context"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 func TestOnionOrderingEndToEnd(t *testing.T) {
@@ -112,7 +112,7 @@ func TestOnionOrderingEndToEnd(t *testing.T) {
 
 	mux := http.NewServeMux()
 	mux.Handle(
-		pingv1connect.NewPingServiceHandler(
+		pingv1connect_test.NewPingServiceHandler(
 			pingServer{},
 			handlerOnion,
 		),
@@ -120,16 +120,16 @@ func TestOnionOrderingEndToEnd(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		server.Client(),
 		server.URL,
 		clientOnion,
 	)
 
-	_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{Number: 10}))
+	_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{Number: 10}))
 	assert.Nil(t, err)
 
-	responses, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1.CountUpRequest{Number: 10}))
+	responses, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1_test.CountUpRequest{Number: 10}))
 	assert.Nil(t, err)
 	var sum int64
 	for responses.Receive() {
@@ -147,18 +147,18 @@ func TestEmptyUnaryInterceptorFunc(t *testing.T) {
 			return next(ctx, request)
 		}
 	})
-	mux.Handle(pingv1connect.NewPingServiceHandler(pingServer{}, connect.WithInterceptors(interceptor)))
+	mux.Handle(pingv1connect_test.NewPingServiceHandler(pingServer{}, connect.WithInterceptors(interceptor)))
 	server := httptest.NewServer(mux)
 	t.Cleanup(server.Close)
-	connectClient := pingv1connect.NewPingServiceClient(server.Client(), server.URL, connect.WithInterceptors(interceptor))
-	_, err := connectClient.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{}))
+	connectClient := pingv1connect_test.NewPingServiceClient(server.Client(), server.URL, connect.WithInterceptors(interceptor))
+	_, err := connectClient.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{}))
 	assert.Nil(t, err)
 	sumStream := connectClient.Sum(context.Background())
-	assert.Nil(t, sumStream.Send(&pingv1.SumRequest{Number: 1}))
+	assert.Nil(t, sumStream.Send(&pingv1_test.SumRequest{Number: 1}))
 	resp, err := sumStream.CloseAndReceive()
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	countUpStream, err := connectClient.CountUp(context.Background(), connect.NewRequest(&pingv1.CountUpRequest{}))
+	countUpStream, err := connectClient.CountUp(context.Background(), connect.NewRequest(&pingv1_test.CountUpRequest{}))
 	assert.Nil(t, err)
 	for countUpStream.Receive() {
 		assert.NotNil(t, countUpStream.Msg())

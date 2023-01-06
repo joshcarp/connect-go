@@ -19,6 +19,8 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -27,14 +29,12 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 func BenchmarkConnect(b *testing.B) {
 	mux := http.NewServeMux()
 	mux.Handle(
-		pingv1connect.NewPingServiceHandler(
+		pingv1connect_test.NewPingServiceHandler(
 			&ExamplePingServer{},
 		),
 	)
@@ -48,7 +48,7 @@ func BenchmarkConnect(b *testing.B) {
 	assert.True(b, ok)
 	httpTransport.DisableCompression = true
 
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		httpClient,
 		server.URL,
 		connect.WithGRPC(),
@@ -62,7 +62,7 @@ func BenchmarkConnect(b *testing.B) {
 			for pb.Next() {
 				_, _ = client.Ping(
 					context.Background(),
-					connect.NewRequest(&pingv1.PingRequest{Text: twoMiB}),
+					connect.NewRequest(&pingv1_test.PingRequest{Text: twoMiB}),
 				)
 			}
 		})

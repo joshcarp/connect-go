@@ -18,7 +18,7 @@
 // 	protoc        (unknown)
 // source: connect/ping/v1/ping.proto
 
-package pingv1
+package pingv1_test
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

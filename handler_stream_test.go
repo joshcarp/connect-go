@@ -16,15 +16,15 @@ package connect
 
 import (
 	"fmt"
+	"github.com/bufbuild/connect-go/ping/v1"
 	"testing"
 
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
 )
 
 func TestClientStream(t *testing.T) {
 	t.Parallel()
-	stream := &ClientStream[pingv1.PingRequest]{conn: &nopStreamingHandlerConn{}}
+	stream := &ClientStream[pingv1_test.PingRequest]{conn: &nopStreamingHandlerConn{}}
 	assert.True(t, stream.Receive())
 	first := fmt.Sprintf("%p", stream.Msg())
 	assert.True(t, stream.Receive())

@@ -17,18 +17,18 @@ package connect
 import (
 	"errors"
 	"fmt"
+	"github.com/bufbuild/connect-go/ping/v1"
 	"net/http"
 	"testing"
 
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
 )
 
 func TestClientStreamForClient_NoPanics(t *testing.T) {
 	t.Parallel()
 	initErr := errors.New("client init failure")
-	clientStream := &ClientStreamForClient[pingv1.PingRequest, pingv1.PingResponse]{err: initErr}
-	assert.ErrorIs(t, clientStream.Send(&pingv1.PingRequest{}), initErr)
+	clientStream := &ClientStreamForClient[pingv1_test.PingRequest, pingv1_test.PingResponse]{err: initErr}
+	assert.ErrorIs(t, clientStream.Send(&pingv1_test.PingRequest{}), initErr)
 	verifyHeaders(t, clientStream.RequestHeader())
 	res, err := clientStream.CloseAndReceive()
 	assert.Nil(t, res)
@@ -41,7 +41,7 @@ func TestClientStreamForClient_NoPanics(t *testing.T) {
 func TestServerStreamForClient_NoPanics(t *testing.T) {
 	t.Parallel()
 	initErr := errors.New("client init failure")
-	serverStream := &ServerStreamForClient[pingv1.PingResponse]{constructErr: initErr}
+	serverStream := &ServerStreamForClient[pingv1_test.PingResponse]{constructErr: initErr}
 	assert.ErrorIs(t, serverStream.Err(), initErr)
 	assert.ErrorIs(t, serverStream.Close(), initErr)
 	assert.NotNil(t, serverStream.Msg())
@@ -55,7 +55,7 @@ func TestServerStreamForClient_NoPanics(t *testing.T) {
 
 func TestServerStreamForClient(t *testing.T) {
 	t.Parallel()
-	stream := &ServerStreamForClient[pingv1.PingResponse]{conn: &nopStreamingClientConn{}}
+	stream := &ServerStreamForClient[pingv1_test.PingResponse]{conn: &nopStreamingClientConn{}}
 	// Ensure that each call to Receive allocates a new message. This helps
 	// vtprotobuf, which doesn't automatically zero messages before unmarshaling
 	// (see https://github.com/bufbuild/connect-go/issues/345), and it's also
@@ -73,14 +73,14 @@ func TestServerStreamForClient(t *testing.T) {
 func TestBidiStreamForClient_NoPanics(t *testing.T) {
 	t.Parallel()
 	initErr := errors.New("client init failure")
-	bidiStream := &BidiStreamForClient[pingv1.CumSumRequest, pingv1.CumSumResponse]{err: initErr}
+	bidiStream := &BidiStreamForClient[pingv1_test.CumSumRequest, pingv1_test.CumSumResponse]{err: initErr}
 	res, err := bidiStream.Receive()
 	assert.Nil(t, res)
 	assert.ErrorIs(t, err, initErr)
 	verifyHeaders(t, bidiStream.RequestHeader())
 	verifyHeaders(t, bidiStream.ResponseHeader())
 	verifyHeaders(t, bidiStream.ResponseTrailer())
-	assert.ErrorIs(t, bidiStream.Send(&pingv1.CumSumRequest{}), initErr)
+	assert.ErrorIs(t, bidiStream.Send(&pingv1_test.CumSumRequest{}), initErr)
 	assert.ErrorIs(t, bidiStream.CloseRequest(), initErr)
 	assert.ErrorIs(t, bidiStream.CloseResponse(), initErr)
 	conn, err := bidiStream.Conn()

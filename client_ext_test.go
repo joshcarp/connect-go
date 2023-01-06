@@ -17,19 +17,19 @@ package connect_test
 import (
 	"context"
 	"errors"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 func TestNewClient_InitFailure(t *testing.T) {
 	t.Parallel()
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		http.DefaultClient,
 		"http://127.0.0.1:8080",
 		// This triggers an error during initialization, so each call will short circuit returning an error.
@@ -45,27 +45,27 @@ func TestNewClient_InitFailure(t *testing.T) {
 
 	t.Run("unary", func(t *testing.T) {
 		t.Parallel()
-		_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{}))
+		_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{}))
 		validateExpectedError(t, err)
 	})
 
 	t.Run("bidi", func(t *testing.T) {
 		t.Parallel()
 		bidiStream := client.CumSum(context.Background())
-		err := bidiStream.Send(&pingv1.CumSumRequest{})
+		err := bidiStream.Send(&pingv1_test.CumSumRequest{})
 		validateExpectedError(t, err)
 	})
 
 	t.Run("client_stream", func(t *testing.T) {
 		t.Parallel()
 		clientStream := client.Sum(context.Background())
-		err := clientStream.Send(&pingv1.SumRequest{})
+		err := clientStream.Send(&pingv1_test.SumRequest{})
 		validateExpectedError(t, err)
 	})
 
 	t.Run("server_stream", func(t *testing.T) {
 		t.Parallel()
-		_, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1.CountUpRequest{Number: 3}))
+		_, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1_test.CountUpRequest{Number: 3}))
 		validateExpectedError(t, err)
 	})
 }
@@ -73,7 +73,7 @@ func TestNewClient_InitFailure(t *testing.T) {
 func TestClientPeer(t *testing.T) {
 	t.Parallel()
 	mux := http.NewServeMux()
-	mux.Handle(pingv1connect.NewPingServiceHandler(pingServer{}))
+	mux.Handle(pingv1connect_test.NewPingServiceHandler(pingServer{}))
 	server := httptest.NewUnstartedServer(mux)
 	server.EnableHTTP2 = true
 	server.StartTLS()
@@ -81,7 +81,7 @@ func TestClientPeer(t *testing.T) {
 
 	run := func(t *testing.T, opts ...connect.ClientOption) {
 		t.Helper()
-		client := pingv1connect.NewPingServiceClient(
+		client := pingv1connect_test.NewPingServiceClient(
 			server.Client(),
 			server.URL,
 			connect.WithClientOptions(opts...),
@@ -89,7 +89,7 @@ func TestClientPeer(t *testing.T) {
 		)
 		ctx := context.Background()
 		// unary
-		_, err := client.Ping(ctx, connect.NewRequest(&pingv1.PingRequest{}))
+		_, err := client.Ping(ctx, connect.NewRequest(&pingv1_test.PingRequest{}))
 		assert.Nil(t, err)
 		// client streaming
 		clientStream := client.Sum(ctx)
@@ -99,10 +99,10 @@ func TestClientPeer(t *testing.T) {
 		})
 		assert.NotZero(t, clientStream.Peer().Addr)
 		assert.NotZero(t, clientStream.Peer().Protocol)
-		err = clientStream.Send(&pingv1.SumRequest{})
+		err = clientStream.Send(&pingv1_test.SumRequest{})
 		assert.Nil(t, err)
 		// server streaming
-		serverStream, err := client.CountUp(ctx, connect.NewRequest(&pingv1.CountUpRequest{}))
+		serverStream, err := client.CountUp(ctx, connect.NewRequest(&pingv1_test.CountUpRequest{}))
 		t.Cleanup(func() {
 			assert.Nil(t, serverStream.Close())
 		})
@@ -115,7 +115,7 @@ func TestClientPeer(t *testing.T) {
 		})
 		assert.NotZero(t, bidiStream.Peer().Addr)
 		assert.NotZero(t, bidiStream.Peer().Protocol)
-		err = bidiStream.Send(&pingv1.CumSumRequest{})
+		err = bidiStream.Send(&pingv1_test.CumSumRequest{})
 		assert.Nil(t, err)
 	}
 

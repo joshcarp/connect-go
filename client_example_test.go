@@ -16,13 +16,13 @@ package connect_test
 
 import (
 	"context"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/bufbuild/connect-go"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 func Example_client() {
@@ -35,13 +35,13 @@ func Example_client() {
 
 	// By default, clients use the Connect protocol. Add connect.WithGRPC() or
 	// connect.WithGRPCWeb() to switch protocols.
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		httpClient,
 		examplePingServer.URL(),
 	)
 	response, err := client.Ping(
 		context.Background(),
-		connect.NewRequest(&pingv1.PingRequest{Number: 42}),
+		connect.NewRequest(&pingv1_test.PingRequest{Number: 42}),
 	)
 	if err != nil {
 		logger.Println("error:", err)

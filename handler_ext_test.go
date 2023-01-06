@@ -17,6 +17,8 @@ package connect_test
 import (
 	"context"
 	"encoding/json"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -24,17 +26,15 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 func TestHandler_ServeHTTP(t *testing.T) {
 	t.Parallel()
 	mux := http.NewServeMux()
-	mux.Handle(pingv1connect.NewPingServiceHandler(
+	mux.Handle(pingv1connect_test.NewPingServiceHandler(
 		successPingServer{},
 	))
-	const pingProcedure = "/" + pingv1connect.PingServiceName + "/Ping"
+	const pingProcedure = "/" + pingv1connect_test.PingServiceName + "/Ping"
 	server := httptest.NewServer(mux)
 	client := server.Client()
 	t.Cleanup(func() {
@@ -146,9 +146,9 @@ func TestHandler_ServeHTTP(t *testing.T) {
 }
 
 type successPingServer struct {
-	pingv1connect.UnimplementedPingServiceHandler
+	pingv1connect_test.UnimplementedPingServiceHandler
 }
 
-func (successPingServer) Ping(context.Context, *connect.Request[pingv1.PingRequest]) (*connect.Response[pingv1.PingResponse], error) {
-	return &connect.Response[pingv1.PingResponse]{}, nil
+func (successPingServer) Ping(context.Context, *connect.Request[pingv1_test.PingRequest]) (*connect.Response[pingv1_test.PingResponse], error) {
+	return &connect.Response[pingv1_test.PingResponse]{}, nil
 }

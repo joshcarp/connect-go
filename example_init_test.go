@@ -21,8 +21,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"sync"
-
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 var examplePingServer *inMemoryServer
@@ -37,7 +35,7 @@ func init() {
 	//
 	// The least-awful option is to set up the server in init().
 	mux := http.NewServeMux()
-	mux.Handle(pingv1connect.NewPingServiceHandler(pingServer{}))
+	mux.Handle(pingv1connect_test.NewPingServiceHandler(pingServer{}))
 	examplePingServer = newInMemoryServer(mux)
 }
 

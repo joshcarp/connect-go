@@ -16,12 +16,12 @@ package connect_test
 
 import (
 	"context"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"log"
 	"os"
 
 	"github.com/bufbuild/connect-go"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 func ExampleUnaryInterceptorFunc() {
@@ -41,12 +41,12 @@ func ExampleUnaryInterceptorFunc() {
 			})
 		},
 	)
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		examplePingServer.Client(),
 		examplePingServer.URL(),
 		connect.WithInterceptors(loggingInterceptor),
 	)
-	if _, err := client.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{Number: 42})); err != nil {
+	if _, err := client.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{Number: 42})); err != nil {
 		logger.Println("error:", err)
 		return
 	}
@@ -79,12 +79,12 @@ func ExampleWithInterceptors() {
 			})
 		},
 	)
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		examplePingServer.Client(),
 		examplePingServer.URL(),
 		connect.WithInterceptors(outer, inner),
 	)
-	if _, err := client.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{})); err != nil {
+	if _, err := client.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{})); err != nil {
 		logger.Println("error:", err)
 		return
 	}

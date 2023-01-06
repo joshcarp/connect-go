@@ -17,35 +17,35 @@ package connect_test
 import (
 	"context"
 	"fmt"
+	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/bufbuild/connect-go/internal/assert"
-	pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-	"github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
 )
 
 type panicPingServer struct {
-	pingv1connect.UnimplementedPingServiceHandler
+	pingv1connect_test.UnimplementedPingServiceHandler
 
 	panicWith any
 }
 
 func (s *panicPingServer) Ping(
 	context.Context,
-	*connect.Request[pingv1.PingRequest],
-) (*connect.Response[pingv1.PingResponse], error) {
+	*connect.Request[pingv1_test.PingRequest],
+) (*connect.Response[pingv1_test.PingResponse], error) {
 	panic(s.panicWith) //nolint:forbidigo
 }
 
 func (s *panicPingServer) CountUp(
 	_ context.Context,
-	_ *connect.Request[pingv1.CountUpRequest],
-	stream *connect.ServerStream[pingv1.CountUpResponse],
+	_ *connect.Request[pingv1_test.CountUpRequest],
+	stream *connect.ServerStream[pingv1_test.CountUpResponse],
 ) error {
-	if err := stream.Send(&pingv1.CountUpResponse{}); err != nil {
+	if err := stream.Send(&pingv1_test.CountUpResponse{}); err != nil {
 		return err
 	}
 	panic(s.panicWith) //nolint:forbidigo
@@ -67,7 +67,7 @@ func TestWithRecover(t *testing.T) {
 		// INTERNAL_ERROR. We should be mapping this back to CodeInternal.
 		assert.Equal(t, connect.CodeOf(err), connect.CodeInternal)
 	}
-	drainStream := func(stream *connect.ServerStreamForClient[pingv1.CountUpResponse]) error {
+	drainStream := func(stream *connect.ServerStreamForClient[pingv1_test.CountUpResponse]) error {
 		t.Helper()
 		defer stream.Close()
 		assert.True(t, stream.Receive())  // expect one response msg
@@ -76,12 +76,12 @@ func TestWithRecover(t *testing.T) {
 	}
 	pinger := &panicPingServer{}
 	mux := http.NewServeMux()
-	mux.Handle(pingv1connect.NewPingServiceHandler(pinger, connect.WithRecover(handle)))
+	mux.Handle(pingv1connect_test.NewPingServiceHandler(pinger, connect.WithRecover(handle)))
 	server := httptest.NewUnstartedServer(mux)
 	server.EnableHTTP2 = true
 	server.StartTLS()
 	defer server.Close()
-	client := pingv1connect.NewPingServiceClient(
+	client := pingv1connect_test.NewPingServiceClient(
 		server.Client(),
 		server.URL,
 	)
@@ -89,20 +89,20 @@ func TestWithRecover(t *testing.T) {
 	for _, panicWith := range []any{42, nil} {
 		pinger.panicWith = panicWith
 
-		_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{}))
+		_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{}))
 		assertHandled(err)
 
-		stream, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1.CountUpRequest{}))
+		stream, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1_test.CountUpRequest{}))
 		assert.Nil(t, err)
 		assertHandled(drainStream(stream))
 	}
 
 	pinger.panicWith = http.ErrAbortHandler
 
-	_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{}))
+	_, err := client.Ping(context.Background(), connect.NewRequest(&pingv1_test.PingRequest{}))
 	assertNotHandled(err)
 
-	stream, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1.CountUpRequest{}))
+	stream, err := client.CountUp(context.Background(), connect.NewRequest(&pingv1_test.CountUpRequest{}))
 	assert.Nil(t, err)
 	assertNotHandled(drainStream(stream))
 }

@@ -52,56 +52,56 @@ on [connect.build][docs] (especially the [Getting Started] guide for Go), the
 
 Curious what all this looks like in practice? From a [Protobuf
 schema](internal/proto/connect/ping/v1/ping.proto), we generate [a small RPC
-package](internal/gen/connect/ping/v1/pingv1connect/ping.connect.go). Using that
+package](ping/v1/pingv1connect/ping.connect.go). Using that
 package, we can build a server:
 
 ```go
 package main
 
 import (
-  "context"
-  "log"
-  "net/http"
+	"context"
+	"log"
+	"net/http"
 
-  "github.com/bufbuild/connect-go"
-  pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-  "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
-  "golang.org/x/net/http2"
-  "golang.org/x/net/http2/h2c"
+	"github.com/bufbuild/connect-go"
+	pingv1 "github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 )
 
 type PingServer struct {
-  pingv1connect.UnimplementedPingServiceHandler // returns errors from all methods
+	pingv1connect.UnimplementedPingServiceHandler // returns errors from all methods
 }
 
 func (ps *PingServer) Ping(
-  ctx context.Context,
-  req *connect.Request[pingv1.PingRequest],
+	ctx context.Context,
+	req *connect.Request[pingv1.PingRequest],
 ) (*connect.Response[pingv1.PingResponse], error) {
-  // connect.Request and connect.Response give you direct access to headers and
-  // trailers. No context-based nonsense!
-  log.Println(req.Header().Get("Some-Header"))
-  res := connect.NewResponse(&pingv1.PingResponse{
-    // req.Msg is a strongly-typed *pingv1.PingRequest, so we can access its
-    // fields without type assertions.
-    Number: req.Msg.Number,
-  })
-  res.Header().Set("Some-Other-Header", "hello!")
-  return res, nil
+	// connect.Request and connect.Response give you direct access to headers and
+	// trailers. No context-based nonsense!
+	log.Println(req.Header().Get("Some-Header"))
+	res := connect.NewResponse(&pingv1.PingResponse{
+		// req.Msg is a strongly-typed *pingv1.PingRequest, so we can access its
+		// fields without type assertions.
+		Number: req.Msg.Number,
+	})
+	res.Header().Set("Some-Other-Header", "hello!")
+	return res, nil
 }
 
 func main() {
-  mux := http.NewServeMux()
-  // The generated constructors return a path and a plain net/http
-  // handler.
-  mux.Handle(pingv1connect.NewPingServiceHandler(&PingServer{}))
-  err := http.ListenAndServe(
-    "localhost:8080",
-    // For gRPC clients, it's convenient to support HTTP/2 without TLS. You can
-    // avoid x/net/http2 by using http.ListenAndServeTLS.
-    h2c.NewHandler(mux, &http2.Server{}),
-  )
-  log.Fatalf("listen failed: %v", err)
+	mux := http.NewServeMux()
+	// The generated constructors return a path and a plain net/http
+	// handler.
+	mux.Handle(pingv1connect.NewPingServiceHandler(&PingServer{}))
+	err := http.ListenAndServe(
+		"localhost:8080",
+		// For gRPC clients, it's convenient to support HTTP/2 without TLS. You can
+		// avoid x/net/http2 by using http.ListenAndServeTLS.
+		h2c.NewHandler(mux, &http2.Server{}),
+	)
+	log.Fatalf("listen failed: %v", err)
 }
 ```
 
@@ -112,30 +112,30 @@ client. To write a client using `connect-go`,
 package main
 
 import (
-  "context"
-  "log"
-  "net/http"
+	"context"
+	"log"
+	"net/http"
 
-  "github.com/bufbuild/connect-go"
-  pingv1 "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1"
-  "github.com/bufbuild/connect-go/internal/gen/connect/ping/v1/pingv1connect"
+	"github.com/bufbuild/connect-go"
+	pingv1 "github.com/bufbuild/connect-go/ping/v1"
+	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 )
 
 func main() {
-  client := pingv1connect.NewPingServiceClient(
-    http.DefaultClient,
-    "http://localhost:8080/",
-  )
-  req := connect.NewRequest(&pingv1.PingRequest{
-    Number: 42,
-  })
-  req.Header().Set("Some-Header", "hello from connect")
-  res, err := client.Ping(context.Background(), req)
-  if err != nil {
-    log.Fatalln(err)
-  }
-  log.Println(res.Msg)
-  log.Println(res.Header().Get("Some-Other-Header"))
+	client := pingv1connect.NewPingServiceClient(
+		http.DefaultClient,
+		"http://localhost:8080/",
+	)
+	req := connect.NewRequest(&pingv1.PingRequest{
+		Number: 42,
+	})
+	req.Header().Set("Some-Header", "hello from connect")
+	res, err := client.Ping(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Println(res.Msg)
+	log.Println(res.Header().Get("Some-Other-Header"))
 }
 ```
 
