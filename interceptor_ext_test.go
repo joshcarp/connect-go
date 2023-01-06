@@ -16,14 +16,14 @@ package connect_test
 
 import (
 	"context"
-	"github.com/bufbuild/connect-go/ping/v1"
-	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
+	"github.com/joshcarp/connect-go/ping/v1"
+	"github.com/joshcarp/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/bufbuild/connect-go"
-	"github.com/bufbuild/connect-go/internal/assert"
+	"github.com/joshcarp/connect-go"
+	"github.com/joshcarp/connect-go/internal/assert"
 )
 
 func TestOnionOrderingEndToEnd(t *testing.T) {

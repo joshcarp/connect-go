@@ -18,7 +18,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bufbuild/connect-go"
+	"github.com/joshcarp/connect-go"
 )
 
 func ExampleError_Message() {

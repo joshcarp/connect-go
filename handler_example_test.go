@@ -16,11 +16,7 @@ package connect_test
 
 import (
 	"context"
-	"github.com/bufbuild/connect-go/ping/v1"
-	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
 	"net/http"
-
-	"github.com/bufbuild/connect-go"
 )
 
 // ExamplePingServer implements some trivial business logic. The Protobuf
@@ -54,8 +50,8 @@ func Example_handler() {
 		),
 	)
 	// You can serve gRPC's health and server reflection APIs using
-	// github.com/bufbuild/connect-grpchealth-go and
-	// github.com/bufbuild/connect-grpcreflect-go.
+	// github.com/joshcarp/connect-grpchealth-go and
+	// github.com/joshcarp/connect-grpcreflect-go.
 	_ = http.ListenAndServeTLS(
 		"localhost:8080",
 		"internal/testdata/server.crt",

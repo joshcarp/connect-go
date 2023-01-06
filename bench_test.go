@@ -19,16 +19,16 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
-	"github.com/bufbuild/connect-go/ping/v1"
-	"github.com/bufbuild/connect-go/ping/v1/pingv1connect"
+	"github.com/joshcarp/connect-go/ping/v1"
+	"github.com/joshcarp/connect-go/ping/v1/pingv1connect"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/bufbuild/connect-go"
-	"github.com/bufbuild/connect-go/internal/assert"
+	"github.com/joshcarp/connect-go"
+	"github.com/joshcarp/connect-go/internal/assert"
 )
 
 func BenchmarkConnect(b *testing.B) {

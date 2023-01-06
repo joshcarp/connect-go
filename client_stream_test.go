@@ -17,11 +17,11 @@ package connect
 import (
 	"errors"
 	"fmt"
-	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/joshcarp/connect-go/ping/v1"
 	"net/http"
 	"testing"
 
-	"github.com/bufbuild/connect-go/internal/assert"
+	"github.com/joshcarp/connect-go/internal/assert"
 )
 
 func TestClientStreamForClient_NoPanics(t *testing.T) {
@@ -58,7 +58,7 @@ func TestServerStreamForClient(t *testing.T) {
 	stream := &ServerStreamForClient[pingv1_test.PingResponse]{conn: &nopStreamingClientConn{}}
 	// Ensure that each call to Receive allocates a new message. This helps
 	// vtprotobuf, which doesn't automatically zero messages before unmarshaling
-	// (see https://github.com/bufbuild/connect-go/issues/345), and it's also
+	// (see https://github.com/joshcarp/connect-go/issues/345), and it's also
 	// less error-prone for users.
 	assert.True(t, stream.Receive())
 	first := fmt.Sprintf("%p", stream.Msg())

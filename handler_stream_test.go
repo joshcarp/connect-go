@@ -16,10 +16,10 @@ package connect
 
 import (
 	"fmt"
-	"github.com/bufbuild/connect-go/ping/v1"
+	"github.com/joshcarp/connect-go/ping/v1"
 	"testing"
 
-	"github.com/bufbuild/connect-go/internal/assert"
+	"github.com/joshcarp/connect-go/internal/assert"
 )
 
 func TestClientStream(t *testing.T) {

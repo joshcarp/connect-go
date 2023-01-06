@@ -20,7 +20,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/bufbuild/connect-go/internal/assert"
+	"github.com/joshcarp/connect-go/internal/assert"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
