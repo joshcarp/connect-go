@@ -17,15 +17,12 @@ package connect_test
 import (
 	"context"
 	"encoding/json"
-	"github.com/joshcarp/connect-go/ping/v1"
-	"github.com/joshcarp/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/joshcarp/connect-go"
-	"github.com/joshcarp/connect-go/internal/assert"
+	"github.com/joshcarp/connect-no/internal/assert"
 )
 
 func TestHandler_ServeHTTP(t *testing.T) {

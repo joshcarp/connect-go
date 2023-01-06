@@ -29,7 +29,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	statusv1 "github.com/joshcarp/connect-go/internal/gen/connectext/grpc/status/v1"
+	statusv1 "github.com/joshcarp/connect-no/internal/gen/connectext/grpc/status/v1"
 )
 
 const (

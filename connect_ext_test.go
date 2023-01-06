@@ -22,7 +22,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/joshcarp/connect-go/ping/v1/pingv1connect"
 	"io"
 	"math"
 	"math/rand"
@@ -33,9 +32,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joshcarp/connect-go"
-	"github.com/joshcarp/connect-go/internal/assert"
-	"github.com/joshcarp/connect-go/internal/gen/connect/import/v1/importv1connect"
+	"github.com/joshcarp/connect-no/internal/assert"
+	"github.com/joshcarp/connect-no/internal/gen/connect/import/v1/importv1connect"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
@@ -855,7 +853,7 @@ func TestCustomCompression(t *testing.T) {
 }
 
 func TestClientWithoutGzipSupport(t *testing.T) {
-	// See https://github.com/joshcarp/connect-go/pull/349 for why we want to
+	// See https://github.com/joshcarp/connect-no/pull/349 for why we want to
 	// support this. TL;DR is that Microsoft's dapr sidecar can't handle
 	// asymmetric compression.
 	t.Parallel()

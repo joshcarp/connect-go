@@ -17,14 +17,11 @@ package connect_test
 import (
 	"context"
 	"fmt"
-	"github.com/joshcarp/connect-go/ping/v1"
-	"github.com/joshcarp/connect-go/ping/v1/pingv1connect"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/joshcarp/connect-go"
-	"github.com/joshcarp/connect-go/internal/assert"
+	"github.com/joshcarp/connect-no/internal/assert"
 )
 
 type panicPingServer struct {

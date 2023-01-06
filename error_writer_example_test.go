@@ -19,8 +19,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-
-	"github.com/joshcarp/connect-go"
 )
 
 // NewHelloHandler is an example HTTP handler. In a real application, it might

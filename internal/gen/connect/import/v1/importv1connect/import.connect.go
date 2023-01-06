@@ -19,8 +19,8 @@
 package importv1connect
 
 import (
-	connect_go "github.com/joshcarp/connect-go"
-	_ "github.com/joshcarp/connect-go/internal/gen/connect/import/v1"
+	connect_go "github.com/joshcarp/connect-no"
+	_ "github.com/joshcarp/connect-no/internal/gen/connect/import/v1"
 	http "net/http"
 	strings "strings"
 )

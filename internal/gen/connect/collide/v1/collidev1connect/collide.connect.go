@@ -21,8 +21,8 @@ package collidev1connect
 import (
 	context "context"
 	errors "errors"
-	connect_go "github.com/joshcarp/connect-go"
-	v1 "github.com/joshcarp/connect-go/internal/gen/connect/collide/v1"
+	connect_go "github.com/joshcarp/connect-no"
+	v1 "github.com/joshcarp/connect-no/internal/gen/connect/collide/v1"
 	http "net/http"
 	strings "strings"
 )

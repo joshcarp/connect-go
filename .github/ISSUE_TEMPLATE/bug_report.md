@@ -19,7 +19,7 @@ self-contained test that shows us the bug:
 ```bash
 mkdir tmp && cd ./tmp
 go mod init example
-go get github.com/joshcarp/connect-go
+go get github.com/joshcarp/connect-no
 touch example_test.go
 ```
 

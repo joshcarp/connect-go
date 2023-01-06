@@ -49,7 +49,6 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/joshcarp/connect-go"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -60,7 +59,7 @@ const (
 	errorsPackage  = protogen.GoImportPath("errors")
 	httpPackage    = protogen.GoImportPath("net/http")
 	stringsPackage = protogen.GoImportPath("strings")
-	connectPackage = protogen.GoImportPath("github.com/joshcarp/connect-go")
+	connectPackage = protogen.GoImportPath("github.com/joshcarp/connect-no")
 
 	generatedFilenameExtension = ".connect.go"
 	generatedPackageSuffix     = "connect"

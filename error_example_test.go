@@ -17,8 +17,6 @@ package connect_test
 import (
 	"errors"
 	"fmt"
-
-	"github.com/joshcarp/connect-go"
 )
 
 func ExampleError_Message() {

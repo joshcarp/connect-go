@@ -16,10 +16,9 @@ package connect
 
 import (
 	"fmt"
-	"github.com/joshcarp/connect-go/ping/v1"
 	"testing"
 
-	"github.com/joshcarp/connect-go/internal/assert"
+	"github.com/joshcarp/connect-no/internal/assert"
 )
 
 func TestClientStream(t *testing.T) {

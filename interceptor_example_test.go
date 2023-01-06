@@ -16,12 +16,8 @@ package connect_test
 
 import (
 	"context"
-	"github.com/joshcarp/connect-go/ping/v1"
-	"github.com/joshcarp/connect-go/ping/v1/pingv1connect"
 	"log"
 	"os"
-
-	"github.com/joshcarp/connect-go"
 )
 
 func ExampleUnaryInterceptorFunc() {

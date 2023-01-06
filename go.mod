@@ -1,4 +1,4 @@
-module github.com/joshcarp/connect-go
+module github.com/joshcarp/connect-no
 
 go 1.19
 
